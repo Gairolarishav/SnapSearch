@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}SnapSearch — Find Your Screenshots{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="hero text-center mb-4">
+  <h1 class="hero-title">Find any screenshot <span class="text-gradient">instantly</span></h1>
+  <p class="hero-sub text-muted mb-4">Describe what you're looking for in plain English</p>
+
+  <div class="search-wrapper mx-auto">
+    <div class="input-group search-group">
+      <span class="input-group-text search-icon">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+      <input
+        type="text"
+        id="searchInput"
+        class="form-control search-input"
+        placeholder="e.g. error message in terminal, login page, blue chart..."
+        autocomplete="off"
+      >
+      <button class="btn btn-primary search-btn" id="searchBtn">
+        Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filters-row d-flex flex-wrap align-items-center gap-3 mb-3">
+  <div class="d-flex align-items-center gap-2">
+    <label class="text-muted small fw-medium" for="topK">Results</label>
+    <input type="range" class="form-range" id="topK" min="3" max="30" value="9" style="width:100px">
+    <span id="topKVal" class="badge bg-secondary">9</span>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn btn-sm btn-outline-secondary" id="advancedToggle">
+      <i class="fa-solid fa-sliders me-1"></i>Advanced
+    </button>
+  </div>
+
+  <div id="statsBar" class="ms-auto text-muted small">
+    <i class="fa-solid fa-images me-1"></i><span id="statsCount">—</span> images indexed
+  </div>
+</div>
+
+<!-- Advanced panel -->
+<div id="advancedPanel" class="advanced-panel mb-3" style="display:none">
+  <div class="card card-body">
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <label class="form-label mb-0 small fw-medium">Text weight</label>
+      </div>
+      <div class="col">
+        <input type="range" class="form-range" id="textWeight" min="0" max="100" value="40">
+      </div>
+      <div class="col-auto">
+        <span class="badge bg-info" id="weightLabel">Text 40% / CLIP 60%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Spinner -->
+<div id="spinner" class="text-center py-5" style="display:none">
+  <div class="spinner-border text-primary" role="status"></div>
+  <p class="text-muted mt-2 small">Searching…</p>
+</div>
+
+<!-- Empty state -->
+<div id="emptyState" class="text-center py-5" style="display:none">
+  <i class="fa-solid fa-image-slash fa-3x text-muted mb-3"></i>
+  <p class="text-muted">No results found. Try a different description.</p>
+</div>
+
+<!-- No index state -->
+<div id="noIndexState" class="text-center py-5">
+  <i class="fa-solid fa-database fa-3x text-muted mb-3"></i>
+  <p class="text-muted mb-2">No images indexed yet.</p>
+  <a href="/indexer" class="btn btn-primary btn-sm">
+    <i class="fa-solid fa-plus me-1"></i>Index Images
+  </a>
+</div>
+
+<!-- Results -->
+<div id="resultsGrid" class="row g-3" style="display:none"></div>
+
+<!-- Path modal -->
+<div class="modal fade" id="pathModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">File Location</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <code id="modalPath" class="d-block p-2 bg-light rounded" style="word-break:break-all"></code>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/search.js"></script>
+{% endblock %}

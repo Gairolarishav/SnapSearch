@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+python-multipart
+jinja2
+easyocr
+openai
+Pillow
+sentence-transformers
+faiss-cpu
+python-dotenv
+tqdm
+numpy

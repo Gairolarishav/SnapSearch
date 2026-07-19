@@ -1,4 +1,18 @@
-venv
+venv/
 .env
+.env.example
+AI_Screenshot_Search_Engine_Plan.md
 
-__pycache__
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Project generated files
+index_store/
+*.db
+*.pkl
+
+# OS
+.DS_Store
+Thumbs.db
