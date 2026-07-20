@@ -16,7 +16,7 @@ It uses a dual-index pipeline: EasyOCR extracts text embedded in images, while G
 
 ## Key Features
 
-- **Natural language search** over any image — screenshots, photos, memes, scanned documents
+- **Natural language search** over any image — screenshots, photos
 - **Dual-index hybrid search** — text embeddings (MiniLM all-MiniLM-L6-v2, 384-dim) fused with visual embeddings (CLIP ViT-B/32, 512-dim)
 - **GPT-4o-mini vision captions** every image, making even photo-only images searchable by description
 - **EasyOCR** extracts embedded text from screenshots, invoices, code editors, and chat windows
@@ -59,8 +59,8 @@ It uses a dual-index pipeline: EasyOCR extracts text embedded in images, while G
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/ai_screenshot_search.git
-cd ai_screenshot_search
+git clone https://github.com/Gairolarishav/SnapSearch.git
+cd SnapSearch
 ```
 
 ### 2. Create and activate a virtual environment
@@ -190,4 +190,10 @@ Please ensure any new dependencies are added to `requirements.txt`.
 
 ## License
 
-MIT License — Copyright (c) 2026 Rishav Gairola. See [LICENSE](LICENSE) for details.
+This project is released under the MIT License.
+
+## About the Maintainer
+
+This project is maintained by Nascenture, a software development company specializing in Django development, custom software solutions, web applications, and cloud-based platforms, AI applications.
+
+- Company Website: https://www.nascenture.com
