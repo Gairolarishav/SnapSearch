@@ -24,6 +24,7 @@ load_dotenv()
 VALID_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
 
 index_state: dict = {
+    "run_id": 0,
     "running": False,
     "current": 0,
     "total": 0,
@@ -180,7 +181,9 @@ async def api_index_start(req: IndexRequest):
             raise HTTPException(status_code=409, detail="Indexing already in progress")
         if not Path(req.folder_path).is_dir():
             raise HTTPException(status_code=400, detail="Folder path does not exist")
+        new_run_id = index_state["run_id"] + 1
         index_state.update({
+            "run_id": new_run_id,
             "running": True, "current": 0, "total": 0,
             "filename": "", "stage": "starting", "percent": 0,
             "result": None, "error": None,
@@ -190,14 +193,15 @@ async def api_index_start(req: IndexRequest):
 
     def run():
         try:
+            _update_state(stage="loading", filename="Loading AI models (first run downloads ~650 MB)…")
             result = run_indexing(req.folder_path, req.force_reindex, _progress_callback)
             _reload_indices(app.state)
             _update_state(running=False, stage="done", percent=100, result=result)
         except Exception as e:
-            _update_state(running=False, stage="error", error=str(e))
+            _update_state(running=False, stage="error", error=str(e) or repr(e))
 
     loop.run_in_executor(None, run)
-    return {"status": "started"}
+    return {"status": "started", "run_id": new_run_id}
 
 
 @app.get("/api/index/progress")

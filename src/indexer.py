@@ -39,6 +39,7 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
         clip_index, clip_id_map = build_index(512), []
 
     added = skipped = failed = 0
+    failed_files: list[dict] = []
 
     for i, img_path in enumerate(images):
         path_str = str(img_path)
@@ -68,7 +69,8 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
                 progress_callback(i, total, filename, "clip")
             clip_vec = embed_image_clip(path_str, clip_model)
 
-            db_id = insert_image(path_str, filename, ocr_text, caption)
+            image_type = img_path.suffix.lstrip(".").upper()
+            db_id = insert_image(path_str, filename, ocr_text, caption, image_type)
             add_vector(text_index, text_vec)
             text_id_map.append(db_id)
             add_vector(clip_index, clip_vec)
@@ -78,6 +80,8 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
         except Exception as e:
             logger.error("Failed to index %s: %s", filename, e)
             failed += 1
+            if len(failed_files) < 100:
+                failed_files.append({"filename": filename, "error": str(e)})
 
         if progress_callback:
             progress_callback(i + 1, total, filename, "done")
@@ -85,4 +89,4 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
     save_index(text_index, text_id_map, TEXT_INDEX_PATH, TEXT_MAP_PATH)
     save_index(clip_index, clip_id_map, CLIP_INDEX_PATH, CLIP_MAP_PATH)
 
-    return {"added": added, "skipped": skipped, "failed": failed, "total": total}
+    return {"added": added, "skipped": skipped, "failed": failed, "total": total, "failed_files": failed_files}

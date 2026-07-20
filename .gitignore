@@ -1,7 +1,7 @@
 venv/
 .env
-.env.example
 AI_Screenshot_Search_Engine_Plan.md
+DOCUMENTATION.md
 
 # Python
 __pycache__/
@@ -16,3 +16,6 @@ index_store/
 # OS
 .DS_Store
 Thumbs.db
+
+# sarena
+.serena/

@@ -12,8 +12,11 @@
   const advToggle   = document.getElementById('advancedToggle');
   const advPanel    = document.getElementById('advancedPanel');
   const statsCount  = document.getElementById('statsCount');
-  const pathModal   = new bootstrap.Modal(document.getElementById('pathModal'));
-  const modalPath   = document.getElementById('modalPath');
+  const pathModal     = new bootstrap.Modal(document.getElementById('pathModal'));
+  const modalPath     = document.getElementById('modalPath');
+  const lightboxModal = new bootstrap.Modal(document.getElementById('lightboxModal'));
+  const lightboxImg   = document.getElementById('lightboxImg');
+  const lightboxFilename = document.getElementById('lightboxFilename');
 
   // Sliders
   topK.addEventListener('input', () => { topKVal.textContent = topK.value; });
@@ -95,6 +98,11 @@
         modalPath.textContent = r.path;
         pathModal.show();
       });
+      col.querySelector('.result-thumb-wrap').addEventListener('click', () => {
+        lightboxImg.src = `/api/image?path=${encodeURIComponent(r.path)}&size=1600`;
+        lightboxFilename.textContent = r.filename;
+        lightboxModal.show();
+      });
       resultsGrid.appendChild(col);
     }
   }
@@ -106,9 +114,11 @@
     const thumbUrl   = `/api/image?path=${encodeURIComponent(r.path)}&size=400`;
     const caption    = (r.caption || r.ocr_text || '').substring(0, 140);
 
+    const fileType = (r.image_type && r.image_type !== 'unknown') ? r.image_type : r.filename.split('.').pop().toUpperCase();
+
     return `
       <div class="result-card h-100">
-        <div class="result-thumb-wrap">
+        <div class="result-thumb-wrap" style="cursor:pointer" title="Click to enlarge">
           <img
             class="result-thumb"
             src="${thumbUrl}"
@@ -126,7 +136,7 @@
           <div class="result-filename" title="${escHtml(r.path)}">${escHtml(r.filename)}</div>
         </div>
         <div class="result-footer">
-          <span class="text-muted" style="font-size:0.72rem">${escHtml(r.image_type)}</span>
+          <span class="text-muted" style="font-size:0.72rem">${escHtml(fileType)}</span>
           <button class="btn btn-sm btn-outline-secondary open-path-btn" style="font-size:0.72rem; padding:2px 8px">
             <i class="fa-solid fa-folder-open me-1"></i>Location
           </button>

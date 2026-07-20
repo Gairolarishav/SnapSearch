@@ -100,6 +100,21 @@
     </div>
   </div>
 </div>
+
+<!-- Lightbox modal -->
+<div class="modal fade" id="lightboxModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content" style="background:#111">
+      <div class="modal-header border-0 pb-1">
+        <span id="lightboxFilename" class="text-light small text-truncate me-2"></span>
+        <button type="button" class="btn-close btn-close-white ms-auto flex-shrink-0" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-2 pt-0">
+        <img id="lightboxImg" src="" alt="" class="img-fluid rounded" style="max-height:82vh; object-fit:contain">
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
