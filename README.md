@@ -59,7 +59,7 @@ It uses a dual-index pipeline: EasyOCR extracts text embedded in images, while G
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Gairolarishav/SnapSearch.git
+git clone https://github.com/nascenture-official/SnapSearch.git
 cd SnapSearch
 ```
 
