@@ -1,16 +1,17 @@
 import base64
-import os
 from pathlib import Path
 
 from openai import OpenAI
 
-_client = None
+from app.config import settings
+
+_client: OpenAI | None = None
 
 
 def _get_client() -> OpenAI:
     global _client
     if _client is None:
-        _client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        _client = OpenAI(api_key=settings.openai_api_key)
     return _client
 
 

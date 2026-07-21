@@ -87,26 +87,40 @@
         </h5>
         <div class="row g-3 text-center">
           <div class="col-4">
-            <div class="stat-tile bg-success-subtle rounded p-3">
+            <div class="stat-tile bg-success-subtle rounded p-3" style="cursor:pointer" id="tileAdded" title="Click to view added files">
               <div class="stat-num text-success fw-bold fs-3" id="sumAdded">—</div>
-              <div class="stat-label text-muted small">Added</div>
+              <div class="stat-label text-muted small">Added <i class="fa-solid fa-chevron-down fa-xs ms-1" id="chevAdded"></i></div>
             </div>
           </div>
           <div class="col-4">
-            <div class="stat-tile bg-warning-subtle rounded p-3">
+            <div class="stat-tile bg-warning-subtle rounded p-3" style="cursor:pointer" id="tileSkipped" title="Click to view skipped files">
               <div class="stat-num text-warning fw-bold fs-3" id="sumSkipped">—</div>
-              <div class="stat-label text-muted small">Skipped</div>
+              <div class="stat-label text-muted small">Skipped <i class="fa-solid fa-chevron-down fa-xs ms-1" id="chevSkipped"></i></div>
             </div>
           </div>
           <div class="col-4">
-            <div class="stat-tile bg-danger-subtle rounded p-3">
+            <div class="stat-tile bg-danger-subtle rounded p-3" style="cursor:pointer" id="tileFailed" title="Click to view failed files">
               <div class="stat-num text-danger fw-bold fs-3" id="sumFailed">—</div>
-              <div class="stat-label text-muted small">Failed</div>
+              <div class="stat-label text-muted small">Failed <i class="fa-solid fa-chevron-down fa-xs ms-1" id="chevFailed"></i></div>
             </div>
           </div>
         </div>
 
-        <p id="skippedNote" class="text-muted small mt-3 mb-0" style="display:none"></p>
+        <!-- Added files detail -->
+        <div id="addedFilesSection" class="mt-3" style="display:none">
+          <p class="small fw-medium text-success mb-1">
+            <i class="fa-solid fa-circle-check me-1"></i>Files successfully indexed:
+          </p>
+          <ul id="addedFilesList" class="list-group list-group-flush rounded border" style="max-height:200px;overflow-y:auto"></ul>
+        </div>
+
+        <!-- Skipped files detail -->
+        <div id="skippedFilesSection" class="mt-3" style="display:none">
+          <p class="small fw-medium text-warning mb-1">
+            <i class="fa-solid fa-forward me-1"></i>Files skipped (already indexed):
+          </p>
+          <ul id="skippedFilesList" class="list-group list-group-flush rounded border" style="max-height:200px;overflow-y:auto"></ul>
+        </div>
 
         <!-- Failed files detail -->
         <div id="failedFilesSection" class="mt-3" style="display:none">

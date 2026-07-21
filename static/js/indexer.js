@@ -14,14 +14,38 @@
   const sumFailed        = document.getElementById('sumFailed');
   const failedFilesList  = document.getElementById('failedFilesList');
   const failedFilesSection = document.getElementById('failedFilesSection');
-  const skippedNote      = document.getElementById('skippedNote');
+  const addedFilesList   = document.getElementById('addedFilesList');
+  const addedFilesSection = document.getElementById('addedFilesSection');
+  const skippedFilesList = document.getElementById('skippedFilesList');
+  const skippedFilesSection = document.getElementById('skippedFilesSection');
   const stageBadges      = document.querySelectorAll('.stage-badge');
+
+  // Tile toggle buttons
+  const tileAdded   = document.getElementById('tileAdded');
+  const tileSkipped = document.getElementById('tileSkipped');
+  const tileFailed  = document.getElementById('tileFailed');
+  const chevAdded   = document.getElementById('chevAdded');
+  const chevSkipped = document.getElementById('chevSkipped');
+  const chevFailed  = document.getElementById('chevFailed');
 
   const STAGES = ['ocr', 'caption', 'embed', 'clip', 'done'];
 
   let sse = null;
   let pollTimer = null;
   let activeRunId = null;
+
+  // Tile toggle helpers
+  function makeTileToggle(tile, section, chev) {
+    if (!tile) return;
+    tile.addEventListener('click', () => {
+      const isOpen = section.style.display !== 'none';
+      section.style.display = isOpen ? 'none' : 'block';
+      if (chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+    });
+  }
+  makeTileToggle(tileAdded,   addedFilesSection,   chevAdded);
+  makeTileToggle(tileSkipped, skippedFilesSection, chevSkipped);
+  makeTileToggle(tileFailed,  failedFilesSection,  chevFailed);
 
   startBtn.addEventListener('click', startIndexing);
 
@@ -165,30 +189,42 @@
     sumSkipped.textContent = result.skipped;
     sumFailed.textContent  = result.failed;
 
-    // Skipped note
-    if (result.skipped > 0 && result.added === 0 && result.failed === 0) {
-      skippedNote.textContent = 'All images were already indexed. Enable "Force re-index" to re-process them.';
-      skippedNote.style.display = 'block';
-    } else if (result.skipped > 0) {
-      skippedNote.textContent = `${result.skipped} image(s) were already indexed and skipped.`;
-      skippedNote.style.display = 'block';
+    // Added files list
+    const addedFiles = result.added_files || [];
+    if (addedFiles.length > 0) {
+      addedFilesList.innerHTML = addedFiles.map(f =>
+        `<li class="list-group-item list-group-item-success py-1 px-2 small font-mono">${escapeHtml(f)}</li>`
+      ).join('');
+      tileAdded.title = `Click to ${addedFilesSection.style.display !== 'none' ? 'hide' : 'view'} added files`;
     } else {
-      skippedNote.style.display = 'none';
+      addedFilesList.innerHTML = '<li class="list-group-item py-1 px-2 small text-muted">No files added.</li>';
+    }
+
+    // Skipped files list
+    const skippedFiles = result.skipped_files || [];
+    if (skippedFiles.length > 0) {
+      skippedFilesList.innerHTML = skippedFiles.map(f =>
+        `<li class="list-group-item list-group-item-warning py-1 px-2 small font-mono">${escapeHtml(f)}</li>`
+      ).join('');
+    } else {
+      skippedFilesList.innerHTML = '<li class="list-group-item py-1 px-2 small text-muted">No files skipped.</li>';
     }
 
     // Failed files list
-    const files = result.failed_files || [];
-    if (files.length > 0) {
-      failedFilesSection.style.display = 'block';
-      failedFilesList.innerHTML = files.map(f =>
+    const failedFiles = result.failed_files || [];
+    if (failedFiles.length > 0) {
+      failedFilesList.innerHTML = failedFiles.map(f =>
         `<li class="list-group-item list-group-item-danger py-1 px-2 small">
           <span class="fw-medium font-mono">${escapeHtml(f.filename)}</span>
           <span class="text-muted ms-2">${escapeHtml(f.error)}</span>
         </li>`
       ).join('');
+      // Auto-open the failed panel if there are failures
+      failedFilesSection.style.display = 'block';
+      if (chevFailed) chevFailed.style.transform = 'rotate(180deg)';
     } else {
+      failedFilesList.innerHTML = '<li class="list-group-item py-1 px-2 small text-muted">No files failed.</li>';
       failedFilesSection.style.display = 'none';
-      failedFilesList.innerHTML = '';
     }
   }
 
@@ -201,6 +237,12 @@
   function hideAll() {
     summaryCard.style.display = 'none';
     errorAlert.classList.add('d-none');
+    addedFilesSection.style.display = 'none';
+    skippedFilesSection.style.display = 'none';
+    failedFilesSection.style.display = 'none';
+    if (chevAdded)   chevAdded.style.transform   = '';
+    if (chevSkipped) chevSkipped.style.transform = '';
+    if (chevFailed)  chevFailed.style.transform  = '';
   }
 
   function escapeHtml(str) {

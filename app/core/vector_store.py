@@ -30,15 +30,15 @@ def search(
     ]
 
 
-def save_index(index, id_map: list, index_path, map_path) -> None:
-    Path(index_path).parent.mkdir(parents=True, exist_ok=True)
+def save_index(index, id_map: list, index_path: Path, map_path: Path) -> None:
+    index_path.parent.mkdir(parents=True, exist_ok=True)
     faiss.write_index(index, str(index_path))
     with open(map_path, "wb") as f:
         pickle.dump(id_map, f)
 
 
-def load_index(index_path, map_path) -> tuple:
-    if not Path(index_path).exists():
+def load_index(index_path: Path, map_path: Path) -> tuple:
+    if not index_path.exists():
         return None, []
     index = faiss.read_index(str(index_path))
     with open(map_path, "rb") as f:

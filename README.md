@@ -92,7 +92,7 @@ cp .env.example .env
 ### 5. Start the server
 
 ```bash
-uvicorn app:app --reload
+uvicorn main:app --reload
 ```
 
 Open **http://localhost:8000** in your browser.
@@ -150,26 +150,26 @@ SnapSearch uses two parallel FAISS indices backed by a single SQLite metadata st
 
 ```
 ai_screenshot_search/
-├── app.py              # FastAPI app, all endpoints, fuse_scores logic
+├── main.py             # Application entry point
 ├── requirements.txt    # Python dependencies
 ├── .env.example        # Environment variable template
-├── src/
-│   ├── indexer.py      # Pipeline orchestrator (OCR → Caption → Embed → CLIP → Save)
-│   ├── ocr_engine.py   # EasyOCR singleton wrapper
-│   ├── captioning.py   # GPT-4o-mini vision API wrapper
-│   ├── embedder.py     # MiniLM text embedder with L2 normalization
-│   ├── clip_embedder.py # CLIP image + text embedder with L2 normalization
-│   ├── database.py     # SQLite CRUD (init, insert, get, count, clear)
-│   └── vector_store.py # FAISS build/add/search/save/load wrappers
+├── app/
+│   ├── main.py         # FastAPI app factory and router registration
+│   ├── api/            # API endpoints (indexer, search, images, stats)
+│   ├── core/           # Core AI & DB engines (OCR, Captioning, CLIP, FAISS, SQLite)
+│   ├── schemas/        # Pydantic validation models
+│   ├── services/       # Business logic (search_service, index_service)
+│   └── web/            # HTML page routes
 ├── templates/
-│   ├── base.html       # Shared layout (navbar, footer, Bootstrap/FA CDN links)
-│   ├── index.html      # Search UI with lightbox and path modal
-│   └── indexer.html    # Indexing UI with SSE progress pipeline
+│   ├── base.html       # Shared layout (navbar, footer, Bootstrap CDN)
+│   ├── index.html      # Search UI
+│   └── indexer.html    # Indexing UI with SSE progress
 ├── static/
-│   ├── css/style.css   # CSS custom properties, dark mode, card and badge styles
+│   ├── css/style.css   # Custom CSS properties and dark mode
 │   └── js/
-│       ├── search.js   # Search fetch, result rendering, lightbox logic
-│       └── indexer.js  # SSE client, polling fallback, stage highlighting
+│       ├── search.js   # Search and lightbox logic
+│       └── indexer.js  # SSE client and progress UI
+├── tests/              # Test suite
 └── index_store/        # Runtime-generated: text.index, clip.index, *.pkl, images.db
 ```
 

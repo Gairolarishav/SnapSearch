@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 from sentence_transformers import SentenceTransformer
 
-_clip_model = None
+_clip_model: SentenceTransformer | None = None
 
 
 def load_clip_model(name: str = "clip-ViT-B-32") -> SentenceTransformer:

@@ -1,17 +1,20 @@
 import logging
 from pathlib import Path
 
-from src.captioning import caption_image
-from src.clip_embedder import embed_image_clip, load_clip_model
-from src.database import clear_all, init_db, insert_image, path_exists
-from src.embedder import embed_text, load_model
-from src.ocr_engine import extract_text
-from src.vector_store import add_vector, build_index, load_index, save_index
+from app.config import settings
+from app.core.captioning import caption_image
+from app.core.clip_embedder import embed_image_clip, load_clip_model
+from app.core.database import clear_all, init_db, insert_image, path_exists
+from app.core.embedder import embed_text, load_model
+from app.core.ocr_engine import extract_text
+from app.core.vector_store import add_vector, build_index, load_index, save_index
 
-TEXT_INDEX_PATH = Path("index_store/text.index")
-TEXT_MAP_PATH = Path("index_store/text_id_map.pkl")
-CLIP_INDEX_PATH = Path("index_store/clip.index")
-CLIP_MAP_PATH = Path("index_store/clip_id_map.pkl")
+# Index file paths — derived from centralised settings
+TEXT_INDEX_PATH: Path = settings.index_store_dir / "text.index"
+TEXT_MAP_PATH: Path = settings.index_store_dir / "text_id_map.pkl"
+CLIP_INDEX_PATH: Path = settings.index_store_dir / "clip.index"
+CLIP_MAP_PATH: Path = settings.index_store_dir / "clip_id_map.pkl"
+
 VALID_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
 
 logger = logging.getLogger(__name__)
@@ -40,6 +43,8 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
 
     added = skipped = failed = 0
     failed_files: list[dict] = []
+    added_files: list[str] = []
+    skipped_files: list[str] = []
 
     for i, img_path in enumerate(images):
         path_str = str(img_path)
@@ -47,6 +52,7 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
 
         if not force_reindex and path_exists(path_str):
             skipped += 1
+            skipped_files.append(filename)
             if progress_callback:
                 progress_callback(i + 1, total, filename, "skipped")
             continue
@@ -76,6 +82,7 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
             add_vector(clip_index, clip_vec)
             clip_id_map.append(db_id)
             added += 1
+            added_files.append(filename)
 
         except Exception as e:
             logger.error("Failed to index %s: %s", filename, e)
@@ -89,4 +96,12 @@ def run_indexing(folder_path: str, force_reindex: bool = False, progress_callbac
     save_index(text_index, text_id_map, TEXT_INDEX_PATH, TEXT_MAP_PATH)
     save_index(clip_index, clip_id_map, CLIP_INDEX_PATH, CLIP_MAP_PATH)
 
-    return {"added": added, "skipped": skipped, "failed": failed, "total": total, "failed_files": failed_files}
+    return {
+        "added": added,
+        "skipped": skipped,
+        "failed": failed,
+        "total": total,
+        "failed_files": failed_files,
+        "added_files": added_files,
+        "skipped_files": skipped_files,
+    }

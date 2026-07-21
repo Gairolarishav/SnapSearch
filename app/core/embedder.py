@@ -1,7 +1,7 @@
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-_model = None
+_model: SentenceTransformer | None = None
 
 
 def load_model(name: str = "all-MiniLM-L6-v2") -> SentenceTransformer:

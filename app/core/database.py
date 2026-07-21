@@ -2,7 +2,9 @@ import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = Path("index_store/images.db")
+from app.config import settings
+
+DB_PATH: Path = settings.index_store_dir / "images.db"
 
 
 def init_db() -> None:

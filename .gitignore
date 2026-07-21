@@ -7,15 +7,23 @@ DOCUMENTATION.md
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+*.egg-info/
 
 # Project generated files
 index_store/
 *.db
 *.pkl
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
 # OS
 .DS_Store
 Thumbs.db
 
-# sarena
+# Tools
 .serena/
+.ruff_cache/
